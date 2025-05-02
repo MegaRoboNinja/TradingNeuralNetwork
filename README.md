@@ -1,6 +1,6 @@
 # Trading Neural Network
 
-## Installation
+## Installation of Dependencies
 
 1. Create a virtual environtment
 
@@ -17,7 +17,7 @@ source neural_network_venv/bin/activate
 3. To install the dependencies, run the following command:
 
 ```bash
-pip3 install -r [requirements.txt](http://_vscodecontentref_/0)
+pip3 install -r requirements.txt
 ```
 
 ## Usage
