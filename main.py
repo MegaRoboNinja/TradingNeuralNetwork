@@ -103,3 +103,48 @@ print('done')
 # TRAIN THE MODEL
 # --------------------------------------------------------------------------------------------
 classifier.fit(input_train, output_train, batch_size = 10, epochs = 100)
+
+# TEST THE MODEL
+# compute the returns we would get using the model to make decisions
+# --------------------------------------------------------------------------------------------
+
+print('Calculating the returns...')
+
+# output_predicted will be a vector of binary values
+# with predictions of whether the stock price will rise or fall
+output_predicted = classifier.predict(input_test)
+output_predicted = output_predicted > 0.5
+
+# prepare the data for the analysis of model predictions
+price_AAPL['output_predicted'] = np.nan
+price_AAPL.iloc[(len(price_AAPL) - len(output_predicted)):,-1:] = output_predicted # fill in the values for the test data
+trade_price_AAPL = price_AAPL.dropna()
+
+# Computing Strategy Returns
+trade_price_AAPL['Tomorrows Returns'] = 0.
+trade_price_AAPL['Tomorrows Returns'] = np.log(trade_price_AAPL['Close']/trade_price_AAPL['Close'].shift(1))
+trade_price_AAPL['Tomorrows Returns'] = trade_price_AAPL['Tomorrows Returns'].shift(-1)
+
+trade_price_AAPL['Strategy Returns'] = 0.
+trade_price_AAPL['Strategy Returns'] = np.where(trade_price_AAPL['output_predicted'] == True, 
+                                                trade_price_AAPL['Tomorrows Returns'], - trade_price_AAPL['Tomorrows Returns'])
+
+trade_price_AAPL['Cumulative Market Returns'] = np.cumsum(trade_price_AAPL['Tomorrows Returns'])
+trade_price_AAPL['Cumulative Strategy Returns'] = np.cumsum(trade_price_AAPL['Strategy Returns'])
+
+print('done')
+
+# Plotting the graph of returns
+import matplotlib.pyplot as plt
+plt.figure(figsize=(10,5))
+plt.plot(trade_price_AAPL['Cumulative Market Returns'], color='r', label='Market Returns')
+plt.plot(trade_price_AAPL['Cumulative Strategy Returns'], color='g', label='Strategy Returns')
+
+plt.title('Market returns and Strategy returns', color='purple', size=15)
+
+# Setting axes labels for close prices plot
+plt.xlabel('Dates', {'color': 'orange', 'fontsize':15})
+plt.ylabel('Returns(%)', {'color': 'orange', 'fontsize':15})
+
+plt.legend()
+plt.show()
