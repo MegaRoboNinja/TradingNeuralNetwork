@@ -7,7 +7,7 @@ import tensorflow as tf
 
 random.seed(42)
 
-# DETTING DATA 
+# GETTING DATA 
 # ------------------------------------------------------------------------------------------
 
 # download data of Apple stock
@@ -16,7 +16,6 @@ price_AAPL= yf.download('AAPL', start='2017-11-06', end='2023-01-03', auto_adjus
 print('\nDownloaded data of Apple Stock')
 print(price_AAPL.shape)
 print(price_AAPL.columns)
-
 # Preparing the dataset
 # Flattten the hierarchical multiindex structure as we only have one index 'AAPL'
 price_AAPL.columns = price_AAPL.columns.get_level_values(0)
@@ -24,9 +23,6 @@ price_AAPL.columns = price_AAPL.columns.get_level_values(0)
 print('\nFlattended the hierarchical multiindex dataframe structure')
 print(price_AAPL.shape)
 print(price_AAPL.columns)
-
-price_AAPL = price_AAPL.dropna()
-price_AAPL = price_AAPL.reset_index()  # Flatten the index
 
 # Creating input features – bit more processed data, that the model will train on
 price_AAPL['H-L'] = price_AAPL['High'] - price_AAPL['Low']
@@ -39,6 +35,8 @@ price_AAPL['RSI'] = talib.RSI(price_AAPL['Close'].values, timeperiod = 9)
 price_AAPL['Williams %R'] = talib.WILLR(price_AAPL['High'].values, price_AAPL['Low'].values, price_AAPL['Close'].values, 7)
 # define Price_Rise that is equivalent to our output value on what it will be tested againts
 price_AAPL['Price_Rise'] = np.where(price_AAPL['Close'].shift(-1) > price_AAPL['Close'], 1, 0)
+
+price_AAPL = price_AAPL.dropna()
 
 input = price_AAPL.iloc[:, 4:-1]
 output = price_AAPL.iloc[:, -1]
@@ -101,3 +99,7 @@ print('done')
 print('Compiling the classifier...')
 classifier.compile(optimizer = 'adam', loss = 'mean_squared_error', metrics = ['accuracy'])
 print('done')
+
+# TRAIN THE MODEL
+# --------------------------------------------------------------------------------------------
+classifier.fit(input_train, output_train, batch_size = 10, epochs = 100)
