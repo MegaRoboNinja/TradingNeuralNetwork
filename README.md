@@ -1,6 +1,6 @@
 # Trading Neural Network
 
-## Installation
+## Installation of Dependencies
 
 1. Create a virtual environtment
 
