@@ -1,6 +1,7 @@
 import numpy as np
+from sklearn.metrics import accuracy_score
 
-def evaluate_model(model, input_test, features_table):
+def evaluate_model(model, input_test, output_test, features_table):
     print('Calculating the returns...')
 
     # output_predicted will be a vector of binary values
@@ -12,6 +13,10 @@ def evaluate_model(model, input_test, features_table):
     features_table['output_predicted'] = np.nan
     features_table.iloc[(len(features_table) - len(output_predicted)):,-1:] = output_predicted # fill in the values for the test data
     trade_price = features_table.dropna()
+
+    # Accuracy
+    accuracy = accuracy_score(output_test, output_predicted)
+    print(f"Model accuracy (price will rise?): {accuracy:.2%}")
 
     # Computing Strategy Returns
     trade_price['Tomorrows Returns'] = 0.
@@ -44,10 +49,7 @@ def evaluate_model(model, input_test, features_table):
 
 
     # Ostatnia wartość skumulowanych strategii zwrotów
-    print(trade_price['Cumulative Strategy Returns'])
     final_cum_return = trade_price['Cumulative Strategy Returns'].iloc[-2]
-    print(final_cum_return)
-
     # Zamiana logarytmicznego zwrotu na procentowy
     total_return_percentage = (np.exp(final_cum_return) - 1) * 100
     print(total_return_percentage)

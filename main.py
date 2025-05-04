@@ -13,6 +13,6 @@ input_train, input_test, output_train, output_test = prepare_data(features_table
 
 ann = build_ann(input_train.shape[1])
 
-ann = train_model(ann, input_train, output_train)
+train_model(ann, input_train, output_train, 100, 10)
 
-evaluate_model(ann, input_test, features_table)
+evaluate_model(ann, input_test, output_test, features_table)
