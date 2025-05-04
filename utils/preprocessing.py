@@ -31,4 +31,4 @@ def prepare_data(features_table):
 
     print('Standarized the dataset')
 
-    return input_train, input_test, output_train, output_test, split_index
+    return input_train, input_test, output_train, output_test

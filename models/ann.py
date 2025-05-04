@@ -27,3 +27,5 @@ def build_ann(input_dim):
     print('Compiling the classifier...')
     classifier.compile(optimizer = 'adam', loss = 'mean_squared_error', metrics = ['accuracy'])
     print('done')
+
+    return classifier
