@@ -1,7 +1,7 @@
 import yfinance as yf
 
 def get_stock_data():
-    OHLCV_table = yf.download('AAPL', start='2017-11-06', end='2025-05-03', auto_adjust = True)
+    OHLCV_table = yf.download('AAPL', start='2000-01-01', end='2025-05-04', auto_adjust = True)
     print('\nDownloaded the OHLCV table')
     print(OHLCV_table.shape)
     print(OHLCV_table.columns)
